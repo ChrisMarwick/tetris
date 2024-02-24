@@ -45,6 +45,8 @@ class TestGrid:
         grid.set_cell_occupied(0, 1, None)
         grid.set_cell_occupied(0, 2, None)
         grid.set_cell_occupied(2, 4, None)
-        assert str(grid) == 'xxx  \n' \
-                            '     \n' \
-                            '    x'
+        assert str(grid) == '*******\n' \
+                            '*xxx  *\n' \
+                            '*     *\n' \
+                            '*    x*\n' \
+                            '*******'

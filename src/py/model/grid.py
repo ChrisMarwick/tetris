@@ -53,10 +53,15 @@ class Grid:
             # self._columns_lowest_unoccupied_cell[column] += 1
 
     def __str__(self):
-        output = []
+        # '*' chars represent the walls of the grid
+        horizontal_wall = '*' * (self.num_columns + 2)
+        output = [horizontal_wall]
         for row in range(self.num_rows):
             row_elements = []
+            row_elements.append('*')
             for column in range(self.num_columns):
                 row_elements.append('x' if self._grid[row][column].is_occupied else ' ')
+            row_elements.append('*')
             output.append(''.join(row_elements))
+        output.append(horizontal_wall)
         return '\n'.join(output)
