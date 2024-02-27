@@ -36,20 +36,32 @@ class Tetromino(ABC):
     def initial_cell_relative_positions(cls):
         raise NotImplementedError
 
-    def move_down(self):
+    def _move(self, row_displacement, column_displacement):
         # The tetramino cannot collide with itself, to avoid messiness of this sort since to check for collision we 
         # merely check if the grid cell is occupied or not we first remove the tetramino from the grid. We'll just 
         # add it back at the same position if the movement was blocked. 
         self._remove_from_grid()
-        # Check if we can move the tetromino down at all
-        new_positions = [self._relative_position_to_absolute((row + 1, column)) for row, column in self.relative_cell_positions]
+        # Check if we can move the tetromino at all
+        new_positions = [
+            self._relative_position_to_absolute((row + row_displacement, column + column_displacement)) 
+            for row, column in self.relative_cell_positions
+        ]
         for row, column in new_positions:
-            if row >= self.grid.num_rows or self.grid.is_cell_occupied(row, column):
+            if row >= self.grid.num_rows or column < 0 or column >= self.grid.num_columns or self.grid.is_cell_occupied(row, column):
                 self._add_to_grid()
                 raise MovementBlocked
         # Update the tetromino's position and it's cell occupancy on the grid
-        self.position = (self.position[0] + 1, self.position[1])
+        self.position = (self.position[0] + row_displacement, self.position[1] + column_displacement)
         self._add_to_grid()
+
+    def move_down(self):
+        self._move(1, 0)
+
+    def move_left(self):
+        self._move(0, -1)
+
+    def move_right(self):
+        self._move(0, 1)
 
     def drop(self):
         self._remove_from_grid()
