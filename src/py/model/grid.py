@@ -1,4 +1,4 @@
-from .cell import Cell
+from .cell import Cell, CellStatus
 
 
 class Grid:
@@ -7,38 +7,36 @@ class Grid:
         self.num_rows = num_rows
         self.num_columns = num_columns
         self._grid = []
-        # self._columns_lowest_unoccupied_cell = []
         for row in range(self.num_rows):
             self._grid.append([])
             for column in range(self.num_columns):
                 self._grid[row].append(Cell())
-        # for column in range(self.num_columns):
-        #     self._columns_lowest_unoccupied_cell.append(self.num_rows - 1)
+
+    def set_cell_visited(self, row, column, color):
+        self._grid[row][column].status = CellStatus.VISITED
+        self._grid[row][column].color = color
 
     def set_cell_occupied(self, row, column, color):
-        self._grid[row][column].is_occupied = True
+        self._grid[row][column].status = CellStatus.OCCUPIED
         self._grid[row][column].color = color
-        # self._columns_lowest_unoccupied_cell[column] = min(row, self._columns_lowest_unoccupied_cell[column])
 
-    def set_cell_unoccupied(self, row, column):
-        self._grid[row][column].is_occupied = False
+    def set_cell_empty(self, row, column):
+        self._grid[row][column].status = CellStatus.EMPTY
         self._grid[row][column].color = None
-        # for r in range(self.num_rows):
-        #     if self._grid[r][column].is_occupied:
-        #         self._columns_lowest_unoccupied_cell[column] = r
-        #         return
-        # self._columns_lowest_unoccupied_cell[column] = self.num_rows - 1
+
+    def is_cell_visited(self, row, column):
+        return self._grid[row][column].status == CellStatus.VISITED
 
     def is_cell_occupied(self, row, column):
-        return self._grid[row][column].is_occupied
+        return self._grid[row][column].status == CellStatus.OCCUPIED
 
     def is_row_filled(self, row):
-        return all(self._grid[row][column].is_occupied for column in range(self.num_columns))
+        return all(self._grid[row][column].status == CellStatus.OCCUPIED for column in range(self.num_columns))
 
     def clear_row(self, row_to_clear):
         # Clear the row itself
         for column in range(self.num_columns):
-            self.set_cell_unoccupied(row_to_clear, column)
+            self.set_cell_empty(row_to_clear, column)
         # TODO: rather than moving down by 1 row it should move down until it hits the floor/an occupied tile, 
         # whilst being connected to tiles of the same tetromino with flood fill rules. 
         for column in range(self.num_columns):
@@ -48,9 +46,7 @@ class Grid:
                 destination_row = row + 1
                 color = self._grid[row][column].color
                 self.set_cell_occupied(destination_row, column, color)
-                self.set_cell_unoccupied(row, column)
-            # We know for certain that the lowest unoccupied cell in each column will go down by 1
-            # self._columns_lowest_unoccupied_cell[column] += 1
+                self.set_cell_empty(row, column)
 
     def __str__(self):
         # '*' chars represent the walls of the grid
@@ -60,7 +56,14 @@ class Grid:
             row_elements = []
             row_elements.append('*')
             for column in range(self.num_columns):
-                row_elements.append('x' if self._grid[row][column].is_occupied else ' ')
+                match self._grid[row][column].status:
+                    case CellStatus.OCCUPIED:
+                        cell_char = 'x'
+                    case CellStatus.VISITED:
+                        cell_char = '-'
+                    case _:
+                        cell_char = ' '
+                row_elements.append(cell_char)
             row_elements.append('*')
             output.append(''.join(row_elements))
         output.append(horizontal_wall)

@@ -41,9 +41,12 @@ def game_loop():
     try:
         active_tetromino.move_down()
     except MovementBlocked:
+        active_tetromino.lock()
         active_tetromino = create_tetromino()
-    except Exception:
-        print('Yay!')
+    row_to_check = grid.num_rows - 1
+    while grid.is_row_filled(row_to_check):
+        grid.clear_row(row_to_check)
+        row_to_check -= 1
     print(grid)
 
 Timer(TIMER_INTERVAL, game_loop).start()

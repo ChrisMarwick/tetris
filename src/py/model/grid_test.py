@@ -8,10 +8,10 @@ class TestGrid:
         grid.set_cell_occupied(0, 1, None)
         assert grid.is_cell_occupied(0, 1) is True
 
-    def test_set_cell_unoccupied(self):
+    def test_set_cell_empty(self):
         grid = Grid(2, 2)
         grid.set_cell_occupied(0, 1, None)
-        grid.set_cell_unoccupied(0, 1)
+        grid.set_cell_empty(0, 1)
         assert grid.is_cell_occupied(0, 1) is False
 
     def test_is_row_filled(self):
