@@ -1,3 +1,4 @@
+import logging
 import random
 from abc import ABC
 from math import sin, cos, radians
@@ -27,6 +28,7 @@ class TetrominoFactory:
         if not self.current_bag:
             _CURRENT_BAG = self._create_tetromino_bag()
         TetrominoCls = _CURRENT_BAG.pop()
+        logging.info(f'Creating tetromino {TetrominoCls}')
         return TetrominoCls(self.grid, start_row, start_column)
 
 
@@ -48,6 +50,7 @@ class Tetromino(ABC):
     def _remove_from_grid(self):
         for relative_row, relative_column in self.relative_cell_positions:
             row, column = self._relative_position_to_absolute((relative_row, relative_column))
+            logging.debug(f'Setting cell {(row, column)} to empty')
             self.grid.set_cell_empty(row, column)
 
     def _add_to_grid(self):
@@ -58,6 +61,7 @@ class Tetromino(ABC):
             if self.grid.is_cell_occupied(row, column):
                 raise MovementBlocked
         for row, column in positions:
+            logging.debug(f'Setting cell {(row, column)} to visited')
             self.grid.set_cell_visited(row, column, None)
 
     @classmethod
@@ -91,6 +95,7 @@ class Tetromino(ABC):
     def lock(self):
         for relative_position in self.relative_cell_positions:
             row, column = self._relative_position_to_absolute(relative_position)
+            logging.debug(f'Setting cell {(row, column)} to occupied')
             self.grid.set_cell_occupied(row, column, None)
 
     def drop(self):
