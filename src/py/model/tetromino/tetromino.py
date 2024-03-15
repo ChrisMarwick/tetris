@@ -3,28 +3,31 @@ from abc import ABC
 from math import sin, cos, radians
 
 
-# TODO: move this somewhere else, we cannot have global mutable state in a webserver
-_CURRENT_BAG = None
 
 
-def _create_tetromino_bag():
-    """
-    We generate tetrominos at random, to avoid creating multiple tetrominos of the same type in a row, we put all 
-    possible tetrominos into a bag with random position and take tetrominos out of the bag until it's empty, then 
-    regenerate the bag. 
-    """
-    from .tetromino_l import TetrominoL
-    bag = [TetrominoL]
-    random.shuffle(bag)
-    return bag
+class TetrominoFactory:
+
+    def __init__(self, grid):
+        self.grid = grid
+        self.current_bag = None
+
+    @staticmethod
+    def _create_tetromino_bag():
+        """
+        We generate tetrominos at random, to avoid creating multiple tetrominos of the same type in a row, we put all 
+        possible tetrominos into a bag with random position and take tetrominos out of the bag until it's empty, then 
+        regenerate the bag. 
+        """
+        bag = [TetrominoI, TetrominoJ, TetrominoL, TetrominoO, TetrominoS, TetrominoT, TetrominoZ]
+        random.shuffle(bag)
+        return bag
 
 
-def create_tetromino(grid, start_row, start_column):
-    global _CURRENT_BAG
-    if not _CURRENT_BAG:
-        _CURRENT_BAG = _create_tetromino_bag()
-    TetrominoCls = _CURRENT_BAG.pop()
-    return TetrominoCls(grid, start_row, start_column)
+    def create_tetromino(self, start_row, start_column):
+        if not self.current_bag:
+            _CURRENT_BAG = self._create_tetromino_bag()
+        TetrominoCls = _CURRENT_BAG.pop()
+        return TetrominoCls(self.grid, start_row, start_column)
 
 
 class MovementBlocked(Exception):
@@ -122,3 +125,52 @@ class Tetromino(ABC):
 
     def rotate_clockwise(self):
         return self._rotate(90)
+    
+
+class TetrominoI(Tetromino):
+
+    @classmethod
+    def initial_cell_relative_positions(cls):
+        return [(0, 0), (0, -1), (0, 1), (0, 2)]
+    
+
+class TetrominoJ(Tetromino):
+
+    @classmethod
+    def initial_cell_relative_positions(cls):
+        return [(0, 0), (-1, 0), (0, 1), (0, 2)]
+    
+
+class TetrominoL(Tetromino):
+
+    @classmethod
+    def initial_cell_relative_positions(cls):
+        return [(0, 0), (0, -1), (-1, 1), (0, 1)]
+    
+
+class TetrominoO(Tetromino):
+
+    @classmethod
+    def initial_cell_relative_positions(cls):
+        return [(0, 0), (0, 1), (1, 1), (1, 0)]
+    
+
+class TetrominoS(Tetromino):
+
+    @classmethod
+    def initial_cell_relative_positions(cls):
+        return [(0, 0), (0, 1), (1, 0), (1, -1)]
+
+
+class TetrominoT(Tetromino):
+
+    @classmethod
+    def initial_cell_relative_positions(cls):
+        return [(0, 0), (-1, 0), (0, -1), (0, 1)]
+    
+
+class TetrominoZ(Tetromino):
+
+    @classmethod
+    def initial_cell_relative_positions(cls):
+        return [(0, 0), (0, -1), (1, 0), (1, 1)]

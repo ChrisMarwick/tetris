@@ -1,7 +1,6 @@
 import pytest
 from model.grid import Grid
-from .tetromino import MovementBlocked
-from .tetromino_l import TetrominoL
+from .tetromino import MovementBlocked, TetrominoL
 
 
 class TestTetromino:

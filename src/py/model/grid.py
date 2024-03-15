@@ -34,6 +34,7 @@ class Grid:
         return all(self._grid[row][column].status == CellStatus.OCCUPIED for column in range(self.num_columns))
 
     def clear_row(self, row_to_clear):
+        return
         # Clear the row itself
         for column in range(self.num_columns):
             self.set_cell_empty(row_to_clear, column)

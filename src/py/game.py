@@ -2,7 +2,7 @@ import keyboard
 from threading import Timer
 from model.grid import Grid
 from model.tetromino.tetromino import MovementBlocked
-from model.tetromino.tetromino_l import TetrominoL
+from model.tetromino.tetromino import TetrominoFactory
 
 
 NUM_ROWS = 20
@@ -12,7 +12,7 @@ TIMER_INTERVAL = 0.5
 def create_tetromino():
     # TODO: should be a random tetromino
     try:
-        new_tetromino = TetrominoL(grid, *tetromino_spawn_position)
+        new_tetromino = tetromino_factory.create_tetromino(*tetromino_spawn_position)
     except MovementBlocked:
         # If creating a new tetromino is blocked by existing tetrominos then the game ends
         raise Exception('Game ended')
@@ -20,6 +20,7 @@ def create_tetromino():
 
 
 grid = Grid(NUM_ROWS, NUM_COLUMNS)
+tetromino_factory = TetrominoFactory(grid)
 tetromino_spawn_position = (0, NUM_COLUMNS // 2)
 active_tetromino = create_tetromino()
 
