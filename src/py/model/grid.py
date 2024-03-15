@@ -1,3 +1,4 @@
+import logging
 from .cell import Cell, CellStatus
 
 
@@ -31,10 +32,12 @@ class Grid:
         return self._grid[row][column].status == CellStatus.OCCUPIED
 
     def is_row_filled(self, row):
-        return all(self._grid[row][column].status == CellStatus.OCCUPIED for column in range(self.num_columns))
+        result = all(self._grid[row][column].status == CellStatus.OCCUPIED for column in range(self.num_columns))
+        logging.info(f'Check if row {row} is filled? {result}')
+        return result
 
     def clear_row(self, row_to_clear):
-        return
+        logging.info(f'Clearing row {row_to_clear}')
         # Clear the row itself
         for column in range(self.num_columns):
             self.set_cell_empty(row_to_clear, column)

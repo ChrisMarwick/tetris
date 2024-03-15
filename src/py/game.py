@@ -7,7 +7,7 @@ from model.tetromino.tetromino import TetrominoFactory
 
 
 file_handler = logging.FileHandler('server.log')
-logging.basicConfig(level=logging.DEBUG, handlers=[file_handler])
+logging.basicConfig(level=logging.INFO, handlers=[file_handler])
 
 NUM_ROWS = 20
 NUM_COLUMNS = 10
@@ -28,6 +28,7 @@ grid = Grid(NUM_ROWS, NUM_COLUMNS)
 tetromino_factory = TetrominoFactory(grid)
 tetromino_spawn_position = (1, NUM_COLUMNS // 2)
 active_tetromino = create_tetromino()
+# score = 0
 
 def keyboard_action(action):
     try:
@@ -45,6 +46,7 @@ keyboard.on_press_key('s', lambda _: keyboard_action(active_tetromino.drop))
 def game_loop():
     global active_tetromino
     Timer(TIMER_INTERVAL, game_loop).start()
+    logging.info('Game timer tick')
     try:
         logging.info('Moving active tetromino down by 1')
         active_tetromino.move_down()
@@ -54,9 +56,12 @@ def game_loop():
         active_tetromino = create_tetromino()
         logging.info('Lock and spawn finished')
     row_to_check = grid.num_rows - 1
+    num_cleared_rows = 0
     while grid.is_row_filled(row_to_check):
         grid.clear_row(row_to_check)
-        row_to_check -= 1
+        num_cleared_rows += 1
+        # score.cleared_row(num_cleared_rows)
+    # logging.info(grid)
     print(grid)
 
 Timer(TIMER_INTERVAL, game_loop).start()
