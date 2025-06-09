@@ -13,6 +13,19 @@ class Grid:
             for column in range(self.num_columns):
                 self._grid[row].append(Cell())
 
+    def to_dict(self):
+        output = []
+        for row in range(self.num_rows):
+            row_data = []
+            for column in range(self.num_columns):
+                cell = self._grid[row][column]
+                row_data.append({
+                    'status': cell.status.name,
+                    'color': cell.color
+                })
+            output.append(row_data)
+        return output
+
     def set_cell_visited(self, row, column, color):
         self._grid[row][column].status = CellStatus.VISITED
         self._grid[row][column].color = color

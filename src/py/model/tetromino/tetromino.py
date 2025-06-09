@@ -23,7 +23,6 @@ class TetrominoFactory:
         random.shuffle(bag)
         return bag
 
-
     def create_tetromino(self, start_row, start_column):
         if not self.current_bag:
             _CURRENT_BAG = self._create_tetromino_bag()

@@ -1,21 +1,27 @@
-[tool.poetry]
-name = "tetris"
-version = "1.0"
-description = "Tetris game server"
-authors = ["Chris Marwick <chris_marwick@hotmail.com>"]
-license = "MIT"
+[project]
+name = "tetris-backend"
+version = "0.1.0"
+description = "Backend for Tetris game"
+authors = [
+    {name = "Chris Marwick",email = "chris_marwick@hotmail.com"}
+]
 readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask (>=3.1.1,<4.0.0)",
+    "keyboard (>=0.13.5,<0.14.0)",
+    "flask-socketio (>=5.5.1,<6.0.0)",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-pytest = "^8.0.1"
-Flask = "^3.0.2"
-Flask-SocketIO = "^5.3.6"
-black = "^24.2.0"
-pylint = "^3.0.3"
-keyboard = "^0.13.5"
-
+[tool.poetry]
+package-mode = false
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.0"
+black = "^25.1.0"
+pylint = "^3.3.7"
+
