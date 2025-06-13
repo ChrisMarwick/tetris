@@ -3,7 +3,7 @@ import keyboard
 from threading import Timer
 from model.grid import Grid
 from model.tetromino.tetromino import MovementBlocked
-from model.tetromino.tetromino import TetrominoFactory
+from model.tetromino.tetromino_factory import TetrominoFactory
 from game_event import GameEvent
 
 file_handler = logging.FileHandler('server.log')

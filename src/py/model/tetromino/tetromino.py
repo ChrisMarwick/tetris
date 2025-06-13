@@ -1,34 +1,8 @@
 import logging
-import random
 from abc import ABC
 from math import sin, cos, radians
-
-
-
-
-class TetrominoFactory:
-
-    def __init__(self, grid):
-        self.grid = grid
-        self.current_bag = None
-
-    @staticmethod
-    def _create_tetromino_bag():
-        """
-        We generate tetrominos at random, to avoid creating multiple tetrominos of the same type in a row, we put all 
-        possible tetrominos into a bag with random position and take tetrominos out of the bag until it's empty, then 
-        regenerate the bag. 
-        """
-        bag = [TetrominoI, TetrominoJ, TetrominoL, TetrominoO, TetrominoS, TetrominoT, TetrominoZ]
-        random.shuffle(bag)
-        return bag
-
-    def create_tetromino(self, start_row, start_column):
-        if not self.current_bag:
-            _CURRENT_BAG = self._create_tetromino_bag()
-        TetrominoCls = _CURRENT_BAG.pop()
-        logging.info(f'Creating tetromino {TetrominoCls}')
-        return TetrominoCls(self.grid, start_row, start_column)
+from model.cell import CellColor
+from model.grid import Grid
 
 
 class MovementBlocked(Exception):
@@ -37,9 +11,10 @@ class MovementBlocked(Exception):
 
 class Tetromino(ABC):
 
-    def __init__(self, grid, start_row, start_column):
+    def __init__(self, grid: Grid, start_row: int, start_column: int, color: CellColor):
         self.grid = grid
         self.position = (start_row, start_column)
+        self.color = color
         self.relative_cell_positions = self.initial_cell_relative_positions()
         self._add_to_grid()
             
@@ -61,7 +36,7 @@ class Tetromino(ABC):
                 raise MovementBlocked
         for row, column in positions:
             logging.debug(f'Setting cell {(row, column)} to visited')
-            self.grid.set_cell_visited(row, column, None)
+            self.grid.set_cell_visited(row, column, self.color)
 
     @classmethod
     def initial_cell_relative_positions(cls):
@@ -95,7 +70,7 @@ class Tetromino(ABC):
         for relative_position in self.relative_cell_positions:
             row, column = self._relative_position_to_absolute(relative_position)
             logging.debug(f'Setting cell {(row, column)} to occupied')
-            self.grid.set_cell_occupied(row, column, None)
+            self.grid.set_cell_occupied(row, column, self.color)
 
     def drop(self):
         max_drop = None

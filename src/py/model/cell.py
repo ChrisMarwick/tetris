@@ -9,7 +9,16 @@ class CellStatus(Enum):
     OCCUPIED = 2    # The cell contains a static tetromino
 
 
+class CellColor(Enum):
+    RED = 'RED'
+    ORANGE = 'ORANGE'
+    YELLOW = 'YELLOW'
+    GREEN = 'GREEN'
+    BLUE = 'BLUE'
+    PURPLE = 'PURPLE'
+
+
 @dataclass
 class Cell:
-    status = CellStatus.EMPTY
-    color = None
+    status: CellStatus = CellStatus.EMPTY
+    color: CellColor = None

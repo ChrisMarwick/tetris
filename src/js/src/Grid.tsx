@@ -1,4 +1,4 @@
-import { Stage, Layer, Rect } from 'react-konva';
+import { Stage, Layer } from 'react-konva';
 import { Cell } from './Cell';
 
 
@@ -16,9 +16,11 @@ export const Grid = ({grid}) => {
     return <Stage width={500} height={1000}>
         <Layer>
             {cellCoords.map(([row, column]) => <Cell
+                key={`${row}-${column}`}
                 row={row}
                 column={column}
                 status={grid[row][column].status}
+                color={grid[row][column].color}
             />)}
         </Layer>
     </Stage>

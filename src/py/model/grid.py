@@ -21,7 +21,7 @@ class Grid:
                 cell = self._grid[row][column]
                 row_data.append({
                     'status': cell.status.name,
-                    'color': cell.color
+                    'color': cell.color.value if cell.color else None
                 })
             output.append(row_data)
         return output
