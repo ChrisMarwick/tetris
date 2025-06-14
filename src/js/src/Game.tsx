@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Grid } from './Grid';
+import { InfoBar } from './InfoBar';
 import { io } from 'socket.io-client'
 import throttle from 'lodash.throttle';
 
@@ -25,7 +26,10 @@ const throttledSendKeyEvent = throttle(sendKeyEvent, MAX_KEY_INTERVAL, {trailing
 
 export const Game = () => {
     const [gameId, setGameId] = useState(null);
-    const [grid, setGrid] = useState(null);
+    const [gameState, setGameState] = useState({
+        grid: null,
+        score: 0
+    });
     
     useEffect(() => {
         const socket = io('http://localhost:5000/', {
@@ -40,9 +44,14 @@ export const Game = () => {
             console.log('New game with id ' + data.game_id);
             setGameId(data.game_id);
         })
-        socket.on('redraw', (data) => {
-            console.log('Received redraw event');
-            setGrid(data.grid);
+        socket.on('event', ({event, data}) => {
+            if (['MOVE_LEFT', 'MOVE_RIGHT', 'ROTATE_CLOCKWISE', 'ROTATE_ANTICLOCKWISE', 'DROP', 'GRAVITY_TICK'].includes(event)) {
+                setGameState(data);
+            } else if (event === 'ROW_CLEARED') {
+                console.log(`GOT ROW_CLEARED ${data}`);
+            } else if (event === 'SCORE') {
+                console.log(`GOT SCORE ${data}`);
+            }
         })
         addEventListener('keydown', (e) => {
             if (e.key in keyEventsMap) {
@@ -50,6 +59,9 @@ export const Game = () => {
                 throttledSendKeyEvent(socket, event);
             }
         })
-    }, [setGameId, setGrid]);
-    return grid ? <Grid grid={grid}/> : <></>
+    }, [setGameId, setGameState]);
+    return <>
+        <InfoBar score={gameState.score}/>
+        <Grid grid={gameState.grid}/>
+    </>
 }

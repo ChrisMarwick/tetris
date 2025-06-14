@@ -20,17 +20,19 @@ class Tetromino(ABC):
             
     def _relative_position_to_absolute(self, relative_position):
         return (self.position[0] + relative_position[0], self.position[1] + relative_position[1])
+
+    @property
+    def absolute_cell_positions(self):
+        return [self._relative_position_to_absolute(pos) for pos in self.relative_cell_positions]
     
     def _remove_from_grid(self):
-        for relative_row, relative_column in self.relative_cell_positions:
-            row, column = self._relative_position_to_absolute((relative_row, relative_column))
+        for row, column in self.absolute_cell_positions:
             logging.debug(f'Setting cell {(row, column)} to empty')
             self.grid.set_cell_empty(row, column)
 
     def _add_to_grid(self):
         positions = []
-        for relative_row, relative_column in self.relative_cell_positions:
-            row, column = self._relative_position_to_absolute((relative_row, relative_column))
+        for row, column in self.absolute_cell_positions:
             positions.append((row, column))
             if self.grid.is_cell_occupied(row, column):
                 raise MovementBlocked
@@ -67,21 +69,19 @@ class Tetromino(ABC):
         self._move(0, 1)
 
     def lock(self):
-        for relative_position in self.relative_cell_positions:
-            row, column = self._relative_position_to_absolute(relative_position)
+        for row, column in self.absolute_cell_positions:
             logging.debug(f'Setting cell {(row, column)} to occupied')
             self.grid.set_cell_occupied(row, column, self.color)
 
     def drop(self):
         max_drop = None
-        for row, column in [self._relative_position_to_absolute(position) for position in self.relative_cell_positions]:
+        for row, column in self.absolute_cell_positions:
             current_cell_max_drop = 0
             while row + current_cell_max_drop + 1 < self.grid.num_rows and not self.grid.is_cell_occupied(row + current_cell_max_drop + 1, column):
                 current_cell_max_drop += 1
             max_drop = min(max_drop, current_cell_max_drop) if max_drop is not None else current_cell_max_drop
         self._remove_from_grid()
         self.position = (self.position[0] + max_drop, self.position[1])
-        self._add_to_grid()
         self.lock()
 
     def _rotate(self, degrees):
@@ -93,7 +93,7 @@ class Tetromino(ABC):
         # Check the tetromino can be rotated without hitting the bottom of the grid/an occupied cell
         new_positions = [self._relative_position_to_absolute(position) for position in new_relative_cell_positions]
         for row, column in new_positions:
-            if row >= self.grid.num_rows or self.grid.is_cell_occupied(row, column):
+            if row < 0 or row >= self.grid.num_rows or column < 0 or column >= self.grid.num_columns or self.grid.is_cell_occupied(row, column):
                 raise MovementBlocked
         self._remove_from_grid()
         self.relative_cell_positions = new_relative_cell_positions
@@ -104,6 +104,9 @@ class Tetromino(ABC):
 
     def rotate_clockwise(self):
         return self._rotate(90)
+
+    def __str__(self):
+        return f'Tetromino class={self.__class__}, color={self.color}, position={self.absolute_cell_positions}'
     
 
 class TetrominoI(Tetromino):

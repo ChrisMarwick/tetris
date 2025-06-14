@@ -46,7 +46,6 @@ class Grid:
 
     def is_row_filled(self, row):
         result = all(self._grid[row][column].status == CellStatus.OCCUPIED for column in range(self.num_columns))
-        logging.info(f'Check if row {row} is filled? {result}')
         return result
 
     def clear_row(self, row_to_clear):
@@ -54,10 +53,8 @@ class Grid:
         # Clear the row itself
         for column in range(self.num_columns):
             self.set_cell_empty(row_to_clear, column)
-        # TODO: rather than moving down by 1 row it should move down until it hits the floor/an occupied tile, 
-        # whilst being connected to tiles of the same tetromino with flood fill rules. 
-        for column in range(self.num_columns):
-            for row in range(row_to_clear - 1, -1, -1):
+        for row in range(row_to_clear - 1, -1, -1):
+            for column in range(self.num_columns):
                 if not self.is_cell_occupied(row, column):
                     continue
                 destination_row = row + 1

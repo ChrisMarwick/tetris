@@ -11,18 +11,32 @@ socketio = SocketIO(app, cors_allowed_origins='*')
 
 games = {}
 
+def get_game(request):
+    global games
+    room_id = request.sid
+    try:
+        game = games[room_id]
+    except KeyError:
+        raise Exception('Error: Game not found')
+    return game
+
+
+def generate_client_gateway(room_id: str):
+    def client_message_gateway(event: GameEvent, data: dict):
+        socketio.emit('event', {
+            'event': event.value,
+            'data': data
+        }, to=room_id)
+
+    return client_message_gateway
+
+
 @socketio.on('new_game')
 def handle_new_game():
     room_id = request.sid
     print('Creating a new game with room_id:', room_id)
     global games
     games.pop(room_id, None)
-
-    def generate_client_gateway(room_id: str):
-        def client_message_gateway(event: GameEvent, data: dict):
-            socketio.emit('redraw', data, to=room_id)
-
-        return client_message_gateway
 
     callback = generate_client_gateway(room_id)
     games[room_id] = Game(callback)
@@ -33,13 +47,7 @@ def handle_new_game():
 
 @socketio.on('action')
 def handle_action(message):
-    global games
-    room_id = request.sid
-    try:
-        game = games[room_id]
-    except KeyError:
-        print('Error: Game not found')
-        return
+    game = get_game(request)
 
     # Process actions from the client
     for event in GameEvent:

@@ -5,7 +5,8 @@ class GameEvent(Enum):
 
     GRAVITY_TICK = 'GRAVITY_TICK'
     TOGGLE_PAUSE = 'TOGGLE_PAUSE'
-    END = 'END'
+    ROW_CLEARED = 'ROW_CLEARED'
+    SCORE = 'SCORE'
 
     DROP = 'DROP'  # Drop the active tetromino to the bottom of the grid
 

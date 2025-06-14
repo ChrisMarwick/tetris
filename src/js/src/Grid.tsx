@@ -19,8 +19,8 @@ export const Grid = ({grid}) => {
                 key={`${row}-${column}`}
                 row={row}
                 column={column}
-                status={grid[row][column].status}
-                color={grid[row][column].color}
+                status={grid ? grid[row][column].status : 'EMPTY'}
+                color={grid ? grid[row][column].color : null}
             />)}
         </Layer>
     </Stage>
