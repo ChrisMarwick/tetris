@@ -7,6 +7,8 @@ class GameEvent(Enum):
     TOGGLE_PAUSE = 'TOGGLE_PAUSE'
     ROW_CLEARED = 'ROW_CLEARED'
     SCORE = 'SCORE'
+    LEVEL_ADVANCE = 'LEVEL_ADVANCE'
+    GAME_ENDED = 'GAME_ENDED'
 
     DROP = 'DROP'  # Drop the active tetromino to the bottom of the grid
 

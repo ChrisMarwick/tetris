@@ -1,7 +1,8 @@
 import logging
 import random
-from model.cell import CellColor
-from model.tetromino.tetromino import TetrominoI, TetrominoJ, TetrominoL, TetrominoO, TetrominoS, TetrominoT, TetrominoZ
+from model.tetromino.tetromino import (
+    TetrominoI, TetrominoJ, TetrominoL, TetrominoO, TetrominoS, TetrominoT, TetrominoZ, TetrominoColor
+)
 
 
 class TetrominoFactory:
@@ -31,7 +32,7 @@ class TetrominoFactory:
         TetrominoCls = self.current_bag.pop()
         logging.info(f'Creating tetromino {TetrominoCls}')
 
-        random_color = random.choice(list(CellColor))
+        random_color = random.choice(list(TetrominoColor))
 
         tetromino = TetrominoCls(self.grid, start_row, start_column, random_color)
 

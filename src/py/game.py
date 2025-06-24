@@ -35,6 +35,8 @@ class Game:
         self.active_tetromino = self.create_tetromino()
         self.game_state = GameState.PAUSED
         self.score = 0
+        self.current_level_rows_cleared = 0
+        self.level = 1
         self.event_callback = event_callback
 
     def create_tetromino(self):
@@ -44,7 +46,7 @@ class Game:
         except MovementBlocked:
             # If creating a new tetromino is blocked by existing tetrominos then the game ends
             self.game_state = GameState.ENDED
-            raise Exception('Game ended')
+            self.dispatch_event(GameEvent.GAME_ENDED)
         return new_tetromino
 
     @classmethod
@@ -58,7 +60,8 @@ class Game:
         return {
             'grid': self.grid.to_dict(),
             'score': self.score,
-            # 'active_tetromino': self.active_tetromino
+            'level': self.level,
+            'game_state': self.game_state.value,
         }
 
     def dispatch_event(self, event: GameEvent, data: dict = None):
@@ -88,7 +91,15 @@ class Game:
         if num_cleared_rows:
             awarded_score = ROW_CLEAR_SCORING[num_cleared_rows]
             self.score += awarded_score
-            self.dispatch_event(GameEvent.SCORE, {'score': awarded_score})
+            self.dispatch_event(GameEvent.SCORE, {'number_rows': num_cleared_rows, 'score': awarded_score})
+            self.current_level_rows_cleared += num_cleared_rows
+            self._update_level()
+
+    def _update_level(self):
+            if self.current_level_rows_cleared >= 10:
+                self.current_level_rows_cleared -= 10
+                self.level += 1
+                self.dispatch_event(GameEvent.LEVEL_ADVANCE, {'level': self.level})
 
     def _handle_gravity_tick(self):
         try:

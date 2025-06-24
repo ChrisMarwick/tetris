@@ -1,7 +1,7 @@
 import logging
 from abc import ABC
+from enum import Enum
 from math import sin, cos, radians
-from model.cell import CellColor
 from model.grid import Grid
 
 
@@ -9,9 +9,21 @@ class MovementBlocked(Exception):
     pass
 
 
+class TetrominoColor(Enum):
+    RED = 'RED'
+    ORANGE = 'ORANGE'
+    YELLOW = 'YELLOW'
+    GREEN = 'GREEN'
+    BLUE = 'BLUE'
+    PURPLE = 'PURPLE'
+
+    def get_raw_color(self):
+        return self.value.lower()
+
+
 class Tetromino(ABC):
 
-    def __init__(self, grid: Grid, start_row: int, start_column: int, color: CellColor):
+    def __init__(self, grid: Grid, start_row: int, start_column: int, color: TetrominoColor):
         self.grid = grid
         self.position = (start_row, start_column)
         self.color = color
@@ -38,7 +50,7 @@ class Tetromino(ABC):
                 raise MovementBlocked
         for row, column in positions:
             logging.debug(f'Setting cell {(row, column)} to visited')
-            self.grid.set_cell_visited(row, column, self.color)
+            self.grid.set_cell_visited(row, column, self.color.value)
 
     @classmethod
     def initial_cell_relative_positions(cls):
@@ -71,7 +83,7 @@ class Tetromino(ABC):
     def lock(self):
         for row, column in self.absolute_cell_positions:
             logging.debug(f'Setting cell {(row, column)} to occupied')
-            self.grid.set_cell_occupied(row, column, self.color)
+            self.grid.set_cell_occupied(row, column, self.color.value)
 
     def drop(self):
         max_drop = None
@@ -106,7 +118,7 @@ class Tetromino(ABC):
         return self._rotate(90)
 
     def __str__(self):
-        return f'Tetromino class={self.__class__}, color={self.color}, position={self.absolute_cell_positions}'
+        return f'Tetromino class={self.__class__}, color={self.color.value}, position={self.absolute_cell_positions}'
     
 
 class TetrominoI(Tetromino):

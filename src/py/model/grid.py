@@ -1,5 +1,6 @@
 import logging
-from .cell import Cell, CellStatus
+from typing import List
+from model.cell import Cell, CellStatus, EMPTY_CELL_COLOR
 
 
 class Grid:
@@ -7,7 +8,7 @@ class Grid:
     def __init__(self, num_rows=20, num_columns=10):
         self.num_rows = num_rows
         self.num_columns = num_columns
-        self._grid = []
+        self._grid: List[List[Cell]] = []
         for row in range(self.num_rows):
             self._grid.append([])
             for column in range(self.num_columns):
@@ -21,27 +22,27 @@ class Grid:
                 cell = self._grid[row][column]
                 row_data.append({
                     'status': cell.status.name,
-                    'color': cell.color.value if cell.color else None
+                    'color': cell.color
                 })
             output.append(row_data)
         return output
 
-    def set_cell_visited(self, row, column, color):
+    def set_cell_visited(self, row: int, column: int, color: str):
         self._grid[row][column].status = CellStatus.VISITED
         self._grid[row][column].color = color
 
-    def set_cell_occupied(self, row, column, color):
+    def set_cell_occupied(self, row: int, column: int, color: str):
         self._grid[row][column].status = CellStatus.OCCUPIED
         self._grid[row][column].color = color
 
-    def set_cell_empty(self, row, column):
+    def set_cell_empty(self, row: int, column: int):
         self._grid[row][column].status = CellStatus.EMPTY
-        self._grid[row][column].color = None
+        self._grid[row][column].color = EMPTY_CELL_COLOR
 
-    def is_cell_visited(self, row, column):
+    def is_cell_visited(self, row: int, column: int):
         return self._grid[row][column].status == CellStatus.VISITED
 
-    def is_cell_occupied(self, row, column):
+    def is_cell_occupied(self, row: int, column: int):
         return self._grid[row][column].status == CellStatus.OCCUPIED
 
     def is_row_filled(self, row):
