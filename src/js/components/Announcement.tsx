@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Layer, Rect, Text } from "react-konva";
 import { GRID_HEIGHT, GRID_WIDTH } from "../config";
+import { Overlay, SIZE_X, SIZE_Y } from "./Overlay";
 
 
-const SIZE_X = 250;
-const SIZE_Y = 125;
 const FONT_SIZE = 20;
 
 
@@ -41,19 +40,9 @@ export const Announcement = ({message, setMessage}: AnnouncementProps) => {
         }
     }, [textRef, message, setSettings]);
 
-    return <Layer 
-        x={(GRID_WIDTH / 2) - (SIZE_X / 2)} 
-        y={(GRID_HEIGHT / 2) - (SIZE_Y / 2)}
-        visible={settings.isVisible}
+    return <Overlay 
+        isVisible={settings.isVisible}
     >
-        <Rect
-            width={SIZE_X}
-            height={SIZE_Y}
-            fill="white"
-            strokeWidth={0}
-            cornerRadius={5}
-            opacity={0.9}
-        />
         <Text
             x={settings.textX}
             y={(SIZE_Y / 2) - (FONT_SIZE / 2)}
@@ -61,8 +50,5 @@ export const Announcement = ({message, setMessage}: AnnouncementProps) => {
             text={message}
             ref={textRef}
         />
-    </Layer>
-    // return message ? <Konva.Text align="center" verticalAlign="middle">{message}</Konva.Text> : <></>
+    </Overlay>
 }
-
-// Support series of messages? 

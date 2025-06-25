@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 NUM_ROWS = 20
 NUM_COLUMNS = 10
-GRAVITY_INTERVAL = 0.5 # seconds
+INITIAL_GRAVITY_INTERVAL = 0.5 # seconds
 TETROMINO_SPAWN_POSITION = (2, NUM_COLUMNS // 2)
 ROW_CLEAR_SCORING = {
     1: 40,
@@ -38,6 +38,7 @@ class Game:
         self.current_level_rows_cleared = 0
         self.level = 1
         self.event_callback = event_callback
+        self.gravity_interval = INITIAL_GRAVITY_INTERVAL
 
     def create_tetromino(self):
         try:
@@ -47,6 +48,7 @@ class Game:
             # If creating a new tetromino is blocked by existing tetrominos then the game ends
             self.game_state = GameState.ENDED
             self.dispatch_event(GameEvent.GAME_ENDED)
+            return None
         return new_tetromino
 
     @classmethod
@@ -99,6 +101,7 @@ class Game:
             if self.current_level_rows_cleared >= 10:
                 self.current_level_rows_cleared -= 10
                 self.level += 1
+                self.gravity_interval = self.gravity_interval - (0.2 * self.gravity_interval)
                 self.dispatch_event(GameEvent.LEVEL_ADVANCE, {'level': self.level})
 
     def _handle_gravity_tick(self):
@@ -120,7 +123,7 @@ class Game:
     def gravity_loop(self):
         if self.game_state in (GameState.PAUSED, GameState.ENDED):
             return
-        Timer(GRAVITY_INTERVAL, self.gravity_loop).start()
+        Timer(self.gravity_interval, self.gravity_loop).start()
         self.dispatch_event(GameEvent.GRAVITY_TICK)
 
     def start(self):
