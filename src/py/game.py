@@ -2,10 +2,12 @@ import logging
 import keyboard
 from threading import Timer
 from game_state import GameState
+from high_score import HighScore
 from model.grid import Grid
 from model.tetromino.tetromino import MovementBlocked
 from model.tetromino.tetromino_factory import TetrominoFactory
 from game_event import GameEvent
+from storage import InMemoryStorage
 from typing import Callable
 
 
@@ -39,6 +41,9 @@ class Game:
         self.level = 1
         self.event_callback = event_callback
         self.gravity_interval = INITIAL_GRAVITY_INTERVAL
+        storage = InMemoryStorage()
+        self.high_score = HighScore(storage)
+        self.is_high_score = False
 
     def create_tetromino(self):
         try:
@@ -47,6 +52,9 @@ class Game:
         except MovementBlocked:
             # If creating a new tetromino is blocked by existing tetrominos then the game ends
             self.game_state = GameState.ENDED
+            high_score_index = self.high_score.check_and_insert_score('X', self.score)
+            if high_score_index != -1:
+                self.is_high_score = True
             self.dispatch_event(GameEvent.GAME_ENDED)
             return None
         return new_tetromino
@@ -64,6 +72,7 @@ class Game:
             'score': self.score,
             'level': self.level,
             'game_state': self.game_state.value,
+            'is_high_score': self.is_high_score,
         }
 
     def dispatch_event(self, event: GameEvent, data: dict = None):

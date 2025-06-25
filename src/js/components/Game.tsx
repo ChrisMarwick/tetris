@@ -80,7 +80,11 @@ export const Game = () => {
                 setAnnouncement(`Level ${data.level}`);
             } else if (event === 'GAME_ENDED') {
                 updateGameData(data);
-                setAnnouncement('Game over!');
+                if (data.is_high_score) {
+                    setAnnouncement('High score achieved!');
+                } else {
+                    setAnnouncement('Game over!');
+                }
                 setTimeout(() => {
                     console.log(gameState);
                     setShowMenu(true);

@@ -7,6 +7,7 @@ interface GameStoreData {
     score: number;
     level: number;
     game_state: 'IN_PROGRESS' | 'PAUSED' | 'ENDED';
+    is_high_score: boolean;
 }
 
 interface IGameStore extends GameStoreData {
@@ -19,5 +20,6 @@ export const useGameStore = create<IGameStore>((set) => ({
     score: 0,
     level: 1,
     game_state: 'PAUSED',
+    is_high_score: false,
     update: (data) => set(data)
 }))
