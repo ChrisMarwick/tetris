@@ -4,6 +4,7 @@ from typing import List, Optional, Tuple
 _HIGH_SCORES: Optional[List[Tuple[str, int]]] = None
 NUMBER_TOP_SCORES = 10
 
+
 class HighScore:
 
     def __init__(self, storage_adaptor: BaseStorageAdaptor):
@@ -12,7 +13,7 @@ class HighScore:
         self.storage_adaptor = storage_adaptor
         if _HIGH_SCORES is None:
             # Load from persistent storage
-            _HIGH_SCORES = self.storage_adaptor.load('high_score') or []
+            _HIGH_SCORES = self.storage_adaptor.load("high_score") or []
 
     def check_and_insert_score(self, name, score):
         """
@@ -31,7 +32,7 @@ class HighScore:
             _HIGH_SCORES.insert(insertion_index, (name, score))
             if len(_HIGH_SCORES) > NUMBER_TOP_SCORES:
                 _HIGH_SCORES.pop()
-            self.storage_adaptor.save('high_score', _HIGH_SCORES)
+            self.storage_adaptor.save("high_score", _HIGH_SCORES)
             return insertion_index
         return -1
 
