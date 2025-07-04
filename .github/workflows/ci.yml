@@ -1,0 +1,13 @@
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      main
+
+jobs:
+  ci_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Run CI
+    steps:
+        - uses: actions/checkout@v3
