@@ -11,7 +11,9 @@ dependencies = [
     "flask (>=3.1.1,<4.0.0)",
     "keyboard (>=0.13.5,<0.14.0)",
     "flask-socketio (>=5.5.1,<6.0.0)",
-    "pytest-mock (>=3.14.1,<4.0.0)"
+    "pytest-mock (>=3.14.1,<4.0.0)",
+    "boto3 (>=1.39.3,<2.0.0)",
+    "python-dotenv (>=1.1.1,<2.0.0)"
 ]
 
 [tool.poetry]
@@ -26,3 +28,9 @@ pytest = "^8.4.0"
 black = "^25.1.0"
 pylint = "^3.3.7"
 
+[tool.poetry.group.webserver]
+optional = true
+
+[tool.poetry.group.webserver.dependencies]
+gunicorn = "^23.0.0"
+gevent = "^25.5.1"
