@@ -1,6 +1,12 @@
 import pytest
 from model.grid import Grid
-from .tetromino import MovementBlocked, TetrominoL, TetrominoO, TetrominoI, TetrominoColor
+from .tetromino import (
+    MovementBlocked,
+    TetrominoL,
+    TetrominoO,
+    TetrominoI,
+    TetrominoColor,
+)
 
 
 class TestTetromino:
@@ -116,7 +122,7 @@ class TestTetromino:
     def test_drop_blocked_1(self):
         grid = Grid(5, 5)
         tetromino = TetrominoL(grid, 1, 2, TetrominoColor.RED)
-        grid.set_cell_occupied(4, 1, 'red')
+        grid.set_cell_occupied(4, 1, "red")
         tetromino.drop()
         assert grid.is_cell_occupied(3, 1)
         assert grid.is_cell_occupied(3, 2)
@@ -126,7 +132,7 @@ class TestTetromino:
         assert not grid.is_cell_visited(1, 2)
         assert not grid.is_cell_visited(1, 3)
         assert not grid.is_cell_visited(0, 3)
-    
+
     def test_drop_blocked_bottom(self):
         grid = Grid(5, 5)
         tetromino = TetrominoL(grid, 1, 2, TetrominoColor.RED)

@@ -11,27 +11,22 @@ from storage import InMemoryStorage
 from typing import Callable
 
 
-file_handler = logging.FileHandler('server.log')
+file_handler = logging.FileHandler("server.log")
 logging.basicConfig(level=logging.INFO, handlers=[file_handler])
 
 logger = logging.getLogger(__name__)
 
 NUM_ROWS = 20
 NUM_COLUMNS = 10
-INITIAL_GRAVITY_INTERVAL = 0.5 # seconds
+INITIAL_GRAVITY_INTERVAL = 0.5  # seconds
 TETROMINO_SPAWN_POSITION = (2, NUM_COLUMNS // 2)
-ROW_CLEAR_SCORING = {
-    1: 40,
-    2: 100,
-    3: 300,
-    4: 1200
-}
+ROW_CLEAR_SCORING = {1: 40, 2: 100, 3: 300, 4: 1200}
 
 
 class Game:
 
     def __init__(self, event_callback):
-        logger.info('*** Starting game...')
+        logger.info("*** Starting game...")
         self.grid = Grid(NUM_ROWS, NUM_COLUMNS)
         self.tetromino_factory = TetrominoFactory(self.grid)
         self.active_tetromino = self.create_tetromino()
@@ -47,12 +42,14 @@ class Game:
 
     def create_tetromino(self):
         try:
-            new_tetromino = self.tetromino_factory.create_tetromino(*TETROMINO_SPAWN_POSITION)
-            logging.info(f'Creating new tetromino {new_tetromino}')
+            new_tetromino = self.tetromino_factory.create_tetromino(
+                *TETROMINO_SPAWN_POSITION
+            )
+            logging.info(f"Creating new tetromino {new_tetromino}")
         except MovementBlocked:
             # If creating a new tetromino is blocked by existing tetrominos then the game ends
             self.game_state = GameState.ENDED
-            high_score_index = self.high_score.check_and_insert_score('X', self.score)
+            high_score_index = self.high_score.check_and_insert_score("X", self.score)
             if high_score_index != -1:
                 self.is_high_score = True
             self.dispatch_event(GameEvent.GAME_ENDED)
@@ -68,11 +65,11 @@ class Game:
 
     def to_dict(self):
         return {
-            'grid': self.grid.to_dict(),
-            'score': self.score,
-            'level': self.level,
-            'game_state': self.game_state.value,
-            'is_high_score': self.is_high_score,
+            "grid": self.grid.to_dict(),
+            "score": self.score,
+            "level": self.level,
+            "game_state": self.game_state.value,
+            "is_high_score": self.is_high_score,
         }
 
     def dispatch_event(self, event: GameEvent, data: dict = None):
@@ -98,30 +95,35 @@ class Game:
             if self.grid.is_row_filled(row):
                 self.grid.clear_row(row)
                 num_cleared_rows += 1
-                self.dispatch_event(GameEvent.ROW_CLEARED, {'row': row})
+                self.dispatch_event(GameEvent.ROW_CLEARED, {"row": row})
         if num_cleared_rows:
             awarded_score = ROW_CLEAR_SCORING[num_cleared_rows]
             self.score += awarded_score
-            self.dispatch_event(GameEvent.SCORE, {'number_rows': num_cleared_rows, 'score': awarded_score})
+            self.dispatch_event(
+                GameEvent.SCORE,
+                {"number_rows": num_cleared_rows, "score": awarded_score},
+            )
             self.current_level_rows_cleared += num_cleared_rows
             self._update_level()
 
     def _update_level(self):
-            if self.current_level_rows_cleared >= 10:
-                self.current_level_rows_cleared -= 10
-                self.level += 1
-                self.gravity_interval = self.gravity_interval - (0.2 * self.gravity_interval)
-                self.dispatch_event(GameEvent.LEVEL_ADVANCE, {'level': self.level})
+        if self.current_level_rows_cleared >= 10:
+            self.current_level_rows_cleared -= 10
+            self.level += 1
+            self.gravity_interval = self.gravity_interval - (
+                0.2 * self.gravity_interval
+            )
+            self.dispatch_event(GameEvent.LEVEL_ADVANCE, {"level": self.level})
 
     def _handle_gravity_tick(self):
         try:
             self.active_tetromino.move_down()
         except MovementBlocked:
-            logger.info('Tetromino blocked, spawning new tetromino')
+            logger.info("Tetromino blocked, spawning new tetromino")
             self.active_tetromino.lock()
             self._check_for_cleared_rows()
             self.active_tetromino = self.create_tetromino()
-            logger.info('Lock and spawn finished')
+            logger.info("Lock and spawn finished")
 
     def _handle_toggle_pause(self):
         if self.game_state == GameState.PAUSED:
@@ -139,23 +141,27 @@ class Game:
         if self.game_state == GameState.ENDED:
             return
 
-        logger.info('Starting/unpausing game')
+        logger.info("Starting/unpausing game")
         self.game_state = GameState.IN_PROGRESS
         self.gravity_loop()
 
     def stop(self):
         if self.game_state == GameState.ENDED:
             return
-        logger.info('Pausing game')
+        logger.info("Pausing game")
         self.game_state = GameState.PAUSED
 
 
-if __name__ == '__main__':
-    game = Game(lambda event, game_state: print(game_state['grid']))
-    keyboard.on_press_key('a', lambda _: game.dispatch_event(GameEvent.MOVE_LEFT))
-    keyboard.on_press_key('d', lambda _: game.dispatch_event(GameEvent.MOVE_RIGHT))
-    keyboard.on_press_key('q', lambda _: game.dispatch_event(GameEvent.ROTATE_ANTICLOCKWISE))
-    keyboard.on_press_key('e', lambda _: game.dispatch_event(GameEvent.ROTATE_CLOCKWISE))
-    keyboard.on_press_key('s', lambda _: game.dispatch_event(GameEvent.DROP))
-    keyboard.on_press_key('p', lambda _: game.dispatch_event(GameEvent.TOGGLE_PAUSE))
+if __name__ == "__main__":
+    game = Game(lambda event, game_state: print(game_state["grid"]))
+    keyboard.on_press_key("a", lambda _: game.dispatch_event(GameEvent.MOVE_LEFT))
+    keyboard.on_press_key("d", lambda _: game.dispatch_event(GameEvent.MOVE_RIGHT))
+    keyboard.on_press_key(
+        "q", lambda _: game.dispatch_event(GameEvent.ROTATE_ANTICLOCKWISE)
+    )
+    keyboard.on_press_key(
+        "e", lambda _: game.dispatch_event(GameEvent.ROTATE_CLOCKWISE)
+    )
+    keyboard.on_press_key("s", lambda _: game.dispatch_event(GameEvent.DROP))
+    keyboard.on_press_key("p", lambda _: game.dispatch_event(GameEvent.TOGGLE_PAUSE))
     game.start()

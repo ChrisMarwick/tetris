@@ -20,10 +20,7 @@ class Grid:
             row_data = []
             for column in range(self.num_columns):
                 cell = self._grid[row][column]
-                row_data.append({
-                    'status': cell.status.name,
-                    'color': cell.color
-                })
+                row_data.append({"status": cell.status.name, "color": cell.color})
             output.append(row_data)
         return output
 
@@ -46,11 +43,14 @@ class Grid:
         return self._grid[row][column].status == CellStatus.OCCUPIED
 
     def is_row_filled(self, row):
-        result = all(self._grid[row][column].status == CellStatus.OCCUPIED for column in range(self.num_columns))
+        result = all(
+            self._grid[row][column].status == CellStatus.OCCUPIED
+            for column in range(self.num_columns)
+        )
         return result
 
     def clear_row(self, row_to_clear):
-        logging.info(f'Clearing row {row_to_clear}')
+        logging.info(f"Clearing row {row_to_clear}")
         # Clear the row itself
         for column in range(self.num_columns):
             self.set_cell_empty(row_to_clear, column)
@@ -65,21 +65,21 @@ class Grid:
 
     def __str__(self):
         # '*' chars represent the walls of the grid
-        horizontal_wall = '*' * (self.num_columns + 2)
+        horizontal_wall = "*" * (self.num_columns + 2)
         output = [horizontal_wall]
         for row in range(self.num_rows):
             row_elements = []
-            row_elements.append('*')
+            row_elements.append("*")
             for column in range(self.num_columns):
                 match self._grid[row][column].status:
                     case CellStatus.OCCUPIED:
-                        cell_char = 'x'
+                        cell_char = "x"
                     case CellStatus.VISITED:
-                        cell_char = '-'
+                        cell_char = "-"
                     case _:
-                        cell_char = ' '
+                        cell_char = " "
                 row_elements.append(cell_char)
-            row_elements.append('*')
-            output.append(''.join(row_elements))
+            row_elements.append("*")
+            output.append("".join(row_elements))
         output.append(horizontal_wall)
-        return '\n'.join(output)
+        return "\n".join(output)

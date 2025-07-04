@@ -12,9 +12,13 @@ class TestTetrominoFactory:
         Mocking the random element to pick a red I tetromino with one rotation, ensure that the resultant tetromino is
         as we expected.
         """
-        with mocker.patch.object(random, 'randint', return_value=1), \
-                mocker.patch.object(TetrominoFactory, '_create_tetromino_bag', return_value=[TetrominoI]), \
-                mocker.patch.object(random, 'choice', return_value=TetrominoColor.RED):
+        with mocker.patch.object(
+            random, "randint", return_value=1
+        ), mocker.patch.object(
+            TetrominoFactory, "_create_tetromino_bag", return_value=[TetrominoI]
+        ), mocker.patch.object(
+            random, "choice", return_value=TetrominoColor.RED
+        ):
             grid = Grid()
             tetromino = TetrominoFactory(grid).create_tetromino(1, 5)
         assert tetromino.color == TetrominoColor.RED

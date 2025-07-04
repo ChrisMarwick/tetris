@@ -1,7 +1,14 @@
 import logging
 import random
 from model.tetromino.tetromino import (
-    TetrominoI, TetrominoJ, TetrominoL, TetrominoO, TetrominoS, TetrominoT, TetrominoZ, TetrominoColor
+    TetrominoI,
+    TetrominoJ,
+    TetrominoL,
+    TetrominoO,
+    TetrominoS,
+    TetrominoT,
+    TetrominoZ,
+    TetrominoColor,
 )
 
 
@@ -18,7 +25,15 @@ class TetrominoFactory:
         possible tetrominos into a bag with random position and take tetrominos out of the bag until it's empty, then
         regenerate the bag.
         """
-        bag = [TetrominoI, TetrominoJ, TetrominoL, TetrominoO, TetrominoS, TetrominoT, TetrominoZ]
+        bag = [
+            TetrominoI,
+            TetrominoJ,
+            TetrominoL,
+            TetrominoO,
+            TetrominoS,
+            TetrominoT,
+            TetrominoZ,
+        ]
         random.shuffle(bag)
         return bag
 
@@ -30,7 +45,7 @@ class TetrominoFactory:
         if not self.current_bag:
             self.current_bag = self._create_tetromino_bag()
         TetrominoCls = self.current_bag.pop()
-        logging.info(f'Creating tetromino {TetrominoCls}')
+        logging.info(f"Creating tetromino {TetrominoCls}")
 
         random_color = random.choice(list(TetrominoColor))
 

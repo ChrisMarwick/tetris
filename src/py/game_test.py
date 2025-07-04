@@ -10,7 +10,7 @@ class TestGame:
         """If the game is paused then start should unpause it and invoke the gravity loop"""
         grid = Grid()
         game = Game(grid)
-        gravity_loop_mock = mocker.patch.object(Game, 'gravity_loop')
+        gravity_loop_mock = mocker.patch.object(Game, "gravity_loop")
 
         game.start()
         assert game.game_state == GameState.IN_PROGRESS
