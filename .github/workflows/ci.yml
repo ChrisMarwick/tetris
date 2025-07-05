@@ -10,4 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     name: Run CI
     steps:
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
+        - uses: actions/setup-python@v5
+          with:
+            python-version: '3.13'
+        - name: Install dependencies
+          run: pip install poetry && poetry install
+          working-directory: src/py
+        - name: Run formatter
+          run: poetry run black . --check
+          working-directory: src/py
+        - name: Run linting
+          run: poetry run pylint .
+          working-directory: src/py
+        - name: Run unit tests
+          run: poetry run pytest .
+          working-directory: src/py
