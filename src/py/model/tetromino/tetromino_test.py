@@ -10,6 +10,7 @@ from .tetromino import (
 
 
 class TestTetromino:
+    """Tests on the Tetromino class"""
 
     def test_move_down(self):
         grid = Grid(5, 5)

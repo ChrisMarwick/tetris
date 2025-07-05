@@ -6,10 +6,13 @@ from model.grid import Grid
 
 
 class MovementBlocked(Exception):
-    pass
+    """
+    Exception when we can't perform a tetromino movement/rotation due to the space it would take being occupied already
+    """
 
 
 class TetrominoColor(Enum):
+    """Possible colors a tetromino can take"""
     RED = "RED"
     ORANGE = "ORANGE"
     YELLOW = "YELLOW"
@@ -22,6 +25,7 @@ class TetrominoColor(Enum):
 
 
 class Tetromino(ABC):
+    """Base class for a tetromino, and all the actions that are possible to take on it"""
 
     def __init__(
         self, grid: Grid, start_row: int, start_column: int, color: TetrominoColor
@@ -47,7 +51,7 @@ class Tetromino(ABC):
 
     def _remove_from_grid(self):
         for row, column in self.absolute_cell_positions:
-            logging.debug(f"Setting cell {(row, column)} to empty")
+            logging.debug("Setting cell %s to empty", (row, column))
             self.grid.set_cell_empty(row, column)
 
     def _add_to_grid(self):
@@ -57,7 +61,7 @@ class Tetromino(ABC):
             if self.grid.is_cell_occupied(row, column):
                 raise MovementBlocked
         for row, column in positions:
-            logging.debug(f"Setting cell {(row, column)} to visited")
+            logging.debug("Setting cell %s to visited", (row, column))
             self.grid.set_cell_visited(row, column, self.color.value)
 
     @classmethod
@@ -100,7 +104,7 @@ class Tetromino(ABC):
 
     def lock(self):
         for row, column in self.absolute_cell_positions:
-            logging.debug(f"Setting cell {(row, column)} to occupied")
+            logging.debug("Setting cell %s to occupied", (row, column))
             self.grid.set_cell_occupied(row, column, self.color.value)
 
     def drop(self):
@@ -162,6 +166,7 @@ class Tetromino(ABC):
 
 
 class TetrominoI(Tetromino):
+    """I tetromino"""
 
     @classmethod
     def initial_cell_relative_positions(cls):
@@ -169,6 +174,7 @@ class TetrominoI(Tetromino):
 
 
 class TetrominoJ(Tetromino):
+    """J tetromino"""
 
     @classmethod
     def initial_cell_relative_positions(cls):
@@ -176,6 +182,7 @@ class TetrominoJ(Tetromino):
 
 
 class TetrominoL(Tetromino):
+    """L tetromino"""
 
     @classmethod
     def initial_cell_relative_positions(cls):
@@ -183,6 +190,7 @@ class TetrominoL(Tetromino):
 
 
 class TetrominoO(Tetromino):
+    """O tetromino"""
 
     @classmethod
     def initial_cell_relative_positions(cls):
@@ -190,6 +198,7 @@ class TetrominoO(Tetromino):
 
 
 class TetrominoS(Tetromino):
+    """S tetromino"""
 
     @classmethod
     def initial_cell_relative_positions(cls):
@@ -197,6 +206,7 @@ class TetrominoS(Tetromino):
 
 
 class TetrominoT(Tetromino):
+    """T tetromino"""
 
     @classmethod
     def initial_cell_relative_positions(cls):
@@ -204,6 +214,7 @@ class TetrominoT(Tetromino):
 
 
 class TetrominoZ(Tetromino):
+    """Z tetromino"""
 
     @classmethod
     def initial_cell_relative_positions(cls):

@@ -4,6 +4,10 @@ from model.cell import Cell, CellStatus, EMPTY_CELL_COLOR
 
 
 class Grid:
+    """
+    Handles the creation and management of the cells that make up the Tetris board/grid, as well as calculations and
+    actions on the grid.
+    """
 
     def __init__(self, num_rows=20, num_columns=10):
         self.num_rows = num_rows
@@ -11,7 +15,7 @@ class Grid:
         self._grid: List[List[Cell]] = []
         for row in range(self.num_rows):
             self._grid.append([])
-            for column in range(self.num_columns):
+            for _ in range(self.num_columns):
                 self._grid[row].append(Cell())
 
     def to_dict(self):
@@ -50,7 +54,7 @@ class Grid:
         return result
 
     def clear_row(self, row_to_clear):
-        logging.info(f"Clearing row {row_to_clear}")
+        logging.info("Clearing row %s", row_to_clear)
         # Clear the row itself
         for column in range(self.num_columns):
             self.set_cell_empty(row_to_clear, column)

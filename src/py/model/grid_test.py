@@ -2,6 +2,7 @@ from .grid import Grid
 
 
 class TestGrid:
+    """Tests on the Grid class"""
 
     def test_set_cell_occupied(self):
         grid = Grid(2, 2)

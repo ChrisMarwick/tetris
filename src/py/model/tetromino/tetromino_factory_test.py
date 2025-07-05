@@ -1,11 +1,14 @@
 import random
+
+from pytest_mock import MockerFixture
+
 from model.grid import Grid
 from model.tetromino.tetromino import TetrominoI, TetrominoColor
 from model.tetromino.tetromino_factory import TetrominoFactory
-from pytest_mock import MockerFixture
 
 
 class TestTetrominoFactory:
+    """Tests for the tetromino factory"""
 
     def test_create_tetromino(self, mocker: MockerFixture):
         """

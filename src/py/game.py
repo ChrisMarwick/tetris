@@ -1,6 +1,9 @@
 import logging
-import keyboard
 from threading import Timer
+from typing import Callable
+
+import keyboard
+
 from game_state import GameState
 from high_score import HighScore
 from model.grid import Grid
@@ -8,7 +11,6 @@ from model.tetromino.tetromino import MovementBlocked
 from model.tetromino.tetromino_factory import TetrominoFactory
 from game_event import GameEvent
 from storage import InMemoryStorage
-from typing import Callable
 
 
 file_handler = logging.FileHandler("server.log")
@@ -24,6 +26,9 @@ ROW_CLEAR_SCORING = {1: 40, 2: 100, 3: 300, 4: 1200}
 
 
 class Game:
+    """
+    Handles the main event loop and game logic
+    """
 
     def __init__(self, event_callback):
         logger.info("*** Starting game...")
@@ -45,7 +50,7 @@ class Game:
             new_tetromino = self.tetromino_factory.create_tetromino(
                 *TETROMINO_SPAWN_POSITION
             )
-            logging.info(f"Creating new tetromino {new_tetromino}")
+            logging.info("Creating new tetromino %s", new_tetromino)
         except MovementBlocked:
             # If creating a new tetromino is blocked by existing tetrominos then the game ends
             self.game_state = GameState.ENDED

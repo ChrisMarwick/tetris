@@ -1,10 +1,12 @@
+from pytest_mock import MockerFixture
+
 from game import Game
 from game_state import GameState
 from model.grid import Grid
-from pytest_mock import MockerFixture
 
 
 class TestGame:
+    """Tests on the Game class"""
 
     def test_start_from_paused(self, mocker: MockerFixture):
         """If the game is paused then start should unpause it and invoke the gravity loop"""
@@ -16,7 +18,8 @@ class TestGame:
         assert game.game_state == GameState.IN_PROGRESS
         assert gravity_loop_mock.call_count == 1
 
-    def test_start_from_ended(self, mocker: MockerFixture):
+    def test_start_from_ended(self):
+        """The end state is final, you should not be able to change the state after it's entered it"""
         grid = Grid()
         game = Game(grid)
         game.game_state = GameState.ENDED
@@ -25,6 +28,7 @@ class TestGame:
         assert game.game_state == GameState.ENDED
 
     def test_stop_from_in_progress(self):
+        """Testing the pause state transition works fine"""
         grid = Grid()
         game = Game(grid)
         game.game_state = GameState.IN_PROGRESS
@@ -33,6 +37,7 @@ class TestGame:
         assert game.game_state == GameState.PAUSED
 
     def test_stop_from_ended(self):
+        """The end state is final, you should not be able to change the state after it's entered it"""
         grid = Grid()
         game = Game(grid)
         game.game_state = GameState.ENDED

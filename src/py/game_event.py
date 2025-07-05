@@ -2,6 +2,9 @@ from enum import Enum
 
 
 class GameEvent(Enum):
+    """
+    Events that can occur during the game, these events trigger actions in response.
+    """
 
     GRAVITY_TICK = "GRAVITY_TICK"
     TOGGLE_PAUSE = "TOGGLE_PAUSE"

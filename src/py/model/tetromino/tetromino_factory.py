@@ -13,6 +13,9 @@ from model.tetromino.tetromino import (
 
 
 class TetrominoFactory:
+    """
+    Factory class that abstracts the various rules around tetromino creation away from the client.
+    """
 
     def __init__(self, grid):
         self.grid = grid
@@ -44,8 +47,9 @@ class TetrominoFactory:
         """
         if not self.current_bag:
             self.current_bag = self._create_tetromino_bag()
+        # pylint: disable-next=invalid-name     # The variable holds a class so should use an appropriate name
         TetrominoCls = self.current_bag.pop()
-        logging.info(f"Creating tetromino {TetrominoCls}")
+        logging.info("Creating tetromino %s", TetrominoCls)
 
         random_color = random.choice(list(TetrominoColor))
 

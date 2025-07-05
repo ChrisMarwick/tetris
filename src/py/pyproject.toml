@@ -34,6 +34,3 @@ optional = true
 [tool.poetry.group.webserver.dependencies]
 gunicorn = "^23.0.0"
 gevent = "^25.5.1"
-
-[tool.pylint.master]
-ignore = [".venv"]
