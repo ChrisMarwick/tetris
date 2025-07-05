@@ -29,6 +29,7 @@ def generate_client_gateway(room_id: str):
     """
     The room id is dynamic so we need to bind a new callback function everytime a game is created.
     """
+
     def client_message_gateway(event: GameEvent, data: dict):
         socketio.emit("event", {"event": event.value, "data": data}, to=room_id)
 

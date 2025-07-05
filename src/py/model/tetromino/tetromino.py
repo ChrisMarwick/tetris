@@ -13,6 +13,7 @@ class MovementBlocked(Exception):
 
 class TetrominoColor(Enum):
     """Possible colors a tetromino can take"""
+
     RED = "RED"
     ORANGE = "ORANGE"
     YELLOW = "YELLOW"
