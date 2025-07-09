@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "container_registry" {
-    name = "tetris_container_registry_${var.environment}"
+    name = "tetris_container_registry"
     force_delete = true
 
     image_scanning_configuration {

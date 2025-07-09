@@ -8,6 +8,7 @@ jobs:
   ci_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
+    environment: staging
     name: Run CI
     steps:
         - uses: actions/checkout@v4
@@ -26,3 +27,19 @@ jobs:
         - name: Run unit tests
           run: poetry run pytest .
           working-directory: src/py
+  cd_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    needs: ci_job
+    environment: staging
+    env:
+      IMAGE_URL: ${AWS_ECR_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/tetris_container_registry:${TF_VAR_ENVIRONMENT}
+    name: Run CD
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply terraform
+        run: terraform apply -auto-approve
+        working-directory: src/terraform
+      - name: Build Dockerfile for server
+        run: docker build -t tetris-server && docker tag tetris-server ${IMAGE_URL} && docker push ${IMAGE_URL}
+        working-directory: src/py
