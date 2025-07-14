@@ -1,4 +1,6 @@
 resource "aws_ecr_repository" "container_registry" {
+    count = var.provision_ecr ? 1 : 0
+
     name = "tetris_container_registry"
     force_delete = true
 

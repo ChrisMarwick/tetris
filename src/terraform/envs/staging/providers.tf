@@ -1,4 +1,12 @@
 terraform {
+    backend "s3" {
+        bucket = "unclechris-tetris-terraform-store"
+        key = "staging.tfstate"
+        region = "ap-southeast-2"
+        dynamodb_table = "tetris-terraform-store-locks"
+        encrypt = true
+    }
+
     required_providers {
         aws = {
             source = "hashicorp/aws"
@@ -12,6 +20,7 @@ provider "aws" {
 
     default_tags {
         tags = {
+            "env": "staging",
             "app": "tetris"
         }
     }
