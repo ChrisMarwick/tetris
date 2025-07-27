@@ -5,7 +5,7 @@ terraform {
         bucket = "unclechris-tetris-terraform-store2"
         key = "live.tfstate"
         region = "ap-southeast-2"
-        dynamodb_table = "tetris-terraform-store-locks"
+        use_lockfile = true
         encrypt = true
     }
 
