@@ -2,5 +2,5 @@ module "tetris" {
     source = "../../module"
 
     environment = "staging"
-    provision_ecr = false
+    should_deploy_instance = var.should_deploy_instance
 }

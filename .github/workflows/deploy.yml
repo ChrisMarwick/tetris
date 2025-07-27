@@ -39,14 +39,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
-      - name: Deploy terraform
+      - name: Pre-deploy terraform except components that depend on the dockerfile
         id: tf_deploy
         run: >
           terraform init &&
-          terraform apply -auto-approve &&
+          terraform apply -var='should_deploy_instance=false' -auto-approve &&
           echo "ECR_URL=$(terraform output -raw ecr_url)" >> "$GITHUB_OUTPUT"
         working-directory: src/terraform/envs/staging
-      - name: Build Dockerfile for server
+      - name: Build and Upload Dockerfile for server
         run: >
           docker build -t tetris-server . &&
           docker tag tetris-server ${{ steps.tf_deploy.outputs.ECR_URL }}:staging &&
@@ -54,3 +54,8 @@ jobs:
           docker push ${{ steps.tf_deploy.outputs.ECR_URL }}:staging
         working-directory: src/py
         timeout-minutes: 5
+      - name: Deploy remaining terraform resources
+        run: >
+          terraform init &&
+          terraform apply -var='should_deploy_instance=true' -auto-approve &&
+        working-directory: src/terraform/envs/staging

@@ -1,6 +1,6 @@
-variable "environment" {
+variable "aws_profile" {
   type = string
-  default = "staging"
+  default = "default"
 }
 
 variable "should_deploy_instance" {

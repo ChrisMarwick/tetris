@@ -19,5 +19,7 @@ JSON
 }
 
 resource "aws_s3_bucket" "storage_bucket" {
-    bucket = "unclechris-tetris-bucket-${var.environment}"
+    bucket = "unclechris2-tetris-bucket-${var.environment}"
+
+    force_destroy = true
 }

@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "remote_store_bucket" {
-  bucket = "unclechris-tetris-terraform-store"
+  bucket = "unclechris-tetris-terraform-store2"
 
   lifecycle {
     prevent_destroy = true
