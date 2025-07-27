@@ -1,7 +1,5 @@
 terraform {
     backend "s3" {
-        # This is stupid to hard code the profile name but it seems variables are not supported here...
-        profile = "tetris"
         bucket = "unclechris-tetris-terraform-store2"
         key = "staging.tfstate"
         region = "ap-southeast-2"
