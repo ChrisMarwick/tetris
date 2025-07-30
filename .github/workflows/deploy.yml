@@ -57,5 +57,5 @@ jobs:
       - name: Deploy remaining terraform resources
         run: >
           terraform init &&
-          terraform apply -var='should_deploy_instance=true' -auto-approve &&
+          terraform apply -var='should_deploy_instance=true' -auto-approve
         working-directory: src/terraform/envs/staging
