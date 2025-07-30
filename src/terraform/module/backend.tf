@@ -16,6 +16,10 @@ resource "aws_launch_template" "launch_template" {
     image_id = "ami-01267069d3f827ef9"
     instance_type = "t2.micro"
     vpc_security_group_ids = [data.aws_security_group.default_security_group.id]
+
+    iam_instance_profile {
+        name = "AmazonEC2ContainerServiceforEC2Role"
+    }
 }
 
 resource "aws_autoscaling_group" "autoscaling_group" {
