@@ -11,6 +11,34 @@ resource "aws_ecs_cluster" "ecs_cluster" {
     name = "tetris-backend-cluster-${var.environment}"
 }
 
+resource "aws_iam_role" "iam_role" {
+    name = "ECSEC2Role-${var.environment}"
+
+    assume_role_policy = jsonencode({
+        "Version": "2008-10-17",
+        "Statement": [
+            {
+                "Sid": "",
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": "ec2.amazonaws.com"
+                },
+                "Action": "sts:AssumeRole"
+            }
+        ]
+    })
+}
+
+resource "aws_iam_role_policy_attachment" "iam_role_policy_attachment" {
+    role = aws_iam_role.iam_role.name
+    policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_instance_profile" "iam_instance_profile" {
+    name = "tetris-ec2-instance-profile-${var.environment}"
+    role = aws_iam_role.iam_role.name
+}
+
 resource "aws_launch_template" "launch_template" {
     name = "tetris-backend-launch-template-${var.environment}"
     image_id = "ami-01267069d3f827ef9"
@@ -18,7 +46,7 @@ resource "aws_launch_template" "launch_template" {
     vpc_security_group_ids = [data.aws_security_group.default_security_group.id]
 
     iam_instance_profile {
-        name = "AmazonEC2ContainerServiceforEC2Role"
+        name = "tetris-ec2-instance-profile-${var.environment}"
     }
 }
 
