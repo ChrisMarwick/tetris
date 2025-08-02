@@ -39,11 +39,31 @@ resource "aws_iam_instance_profile" "iam_instance_profile" {
     role = aws_iam_role.iam_role.name
 }
 
+resource "aws_security_group" "tetris_sg" {
+    name = "tetris-sg-${var.environment}"
+    vpc_id = data.aws_vpc.vpc.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "tetris_sg_rule" {
+    security_group_id = aws_security_group.tetris_sg.id
+
+    cidr_ipv4 = "0.0.0.0/0"
+    ip_protocol = "-1"
+}
+
+resource "aws_vpc_security_group_egress_rule" "tetris_sg_rule" {
+    security_group_id = aws_security_group.tetris_sg.id
+
+    cidr_ipv4 = "0.0.0.0/0"
+    ip_protocol = "-1"
+}
+
 resource "aws_launch_template" "launch_template" {
     name = "tetris-backend-launch-template-${var.environment}"
     image_id = "ami-01267069d3f827ef9"
     instance_type = "t2.micro"
-    vpc_security_group_ids = [data.aws_security_group.default_security_group.id]
+    vpc_security_group_ids = [aws_security_group.tetris_sg.id]
+    key_name = "tetris-key-pair-${var.environment}"
 
     iam_instance_profile {
         name = "tetris-ec2-instance-profile-${var.environment}"
